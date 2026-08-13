@@ -21,7 +21,7 @@ body {
 .container {
     width: 400px;
     max-width: 90%;
-    position: relative;
+    position: relative; //
 }
 
 .message {

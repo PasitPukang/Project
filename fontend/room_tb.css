@@ -10,16 +10,7 @@ body {
     color: #333;
 }
 
-.container {
-    width: 90%;
-    max-width: 1000px;
-    margin: 30px auto;
-    background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    padding: 25px;
-    transition: all 0.3s ease;
-}
+
 
 h1 {
     color: #0077cc;

@@ -1,106 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- กำหนด character encoding และ viewport -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- ลิงก์ไปยังไฟล์ CSS -->
     <link rel="stylesheet" href="Home.css">
+    <!-- ลิงก์ไปยังไอคอนจาก LineIcons -->
+    <link href="https://cdn.lineicons.com/5.0/lineicons.css" rel="stylesheet">
     <title>Home Page</title>
 </head>
 <body>
-    <body>
-        <div class="header">
-            <nav class="navbar">
-                <ul class="menu">
-                    <li><a href="room_tb.html">✅Check All Booking</a></li>
-                </ul>
-            </nav>
-            <div class="logo">
-                <span>Meeting-Room Booking</span>
+    <!-- ส่วนหัวของหน้า -->
+    <div class="header">
+        <!-- เมนูนำทาง -->
+        <nav class="navbar">
+            <ul class="menu">
+                <!-- ลิงก์ไปยังหน้า Check All Booking -->
+                <li><a href="room_tb.html">✅Check All Booking</a></li>
+            </ul>
+        </nav>
+        <!-- โลโก้ -->
+        <div class="logo">
+            <span>Meeting-Room Booking</span>
+        </div>
+        <!-- ปุ่มลงทะเบียน -->
+        <button type="button" class="login-button" onclick="window.location.href='login.html';">
+            <i class="lni lni-user-4"></i>ลงทะเบียน
+        </button>
+    </div>
+    
+    <!-- แถบสีน้ำเงิน -->
+    <div class="blue-bar">
+        <!-- ลิงก์ที่แสดงว่าอยู่ในหน้าปัจจุบัน -->
+        <a href="#" class="active">ห้องประชุม</a>
+    </div>
+    <!-- แถบข้อความเลื่อน -->
+    <div class="rgb-bar">
+        <h2><marquee direction="left">ยินดีต้อนรับเข้าสู่เว็บไซต์การจองห้องประชุม</marquee></h2>
+    </div>
+    <!-- เนื้อหาหลัก -->
+    <div class="main-content">
+        <!-- ส่วนแสดงสถานะห้องประชุม -->
+        <div class="room-status-container">
+            <!-- แสดงจำนวนห้องว่าง -->
+            <div class="status-box">
+                <h3>ห้องว่าง</h3>
+                <div class="status-number available"></div>
+                <p>พร้อมใช้งานทันที</p>
             </div>
-            <button type="button" class="free-trial-button" onclick="window.location.href='login.html';">ลงทะเบียน</button>
+            <!-- แสดงจำนวนห้องไม่ว่าง -->
+            <div class="status-box">
+                <h3>ห้องไม่ว่าง</h3>
+                <div class="status-number unavailable"></div>
+                <p>กำลังมีการใช้งาน</p>
+            </div>
+            <!-- แสดงจำนวนห้องทั้งหมด -->
+            <div class="status-box">
+                <h3>จำนวนห้องทั้งหมด</h3>
+                <div class="status-number total"></div>
+                <p>ห้องประชุมทั้งหมด</p>
+            </div>
         </div>
         
-        <div class="blue-bar">
-            <a href="#" class="active">ห้องประชุม</a>
-        </div>
-        <div class="rgb-bar">
-        <h2><marquee direction="left" > ยินดีต้อนรับเข้าสู่เว็บไซต์การจองห้องประชุม </marquee></h2></div>
-        <div class="main-content">
-            <!-- เพิ่มส่วนแสดงสถานะห้องประชุม -->
-            <div class="room-status-container">
-                <div class="status-box">
-                    <h3>ห้องว่าง</h3>
-                    <div class="status-number available"></div>
-                    <p>พร้อมใช้งานทันที</p>
+        <!-- ส่วนเลือกห้องประชุม -->
+        <h2>เลือกห้องประชุม</h2>
+        <div class="room-list">
+            <!-- การ์ดแสดงข้อมูลห้องขนาดเล็ก -->
+            <div class="room-card">
+                <div class="room-container">
+                    <img src="https://d2e5ushqwiltxm.cloudfront.net/wp-content/uploads/sites/107/2020/08/11025130/imagination.png">
                 </div>
-                <div class="status-box">
-                    <h3>ห้องไม่ว่าง</h3>
-                    <div class="status-number unavailable"></div>
-                    <p>กำลังมีการใช้งาน</p>
-                </div>
-                <div class="status-box">
-                    <h3>จำนวนห้องทั้งหมด</h3>
-                    <div class="status-number total"></div>
-                    <p>ห้องประชุมทั้งหมด</p>
-                </div>
+                <h3>ห้องขนาดเล็ก</h3>
+                <p>จำนวนผู้เข้าใช้: 5-20 คน</p>
+                <p>สิ่งอำนวยความสะดวก: โปรเจคเตอร์, ไวท์บอร์ด</p>
+                <p><strong>จุดเด่น:</strong> เหมาะสำหรับกลุ่มเล็ก, บรรยากาศเงียบ</p>
             </div>
             
-            <h2>เลือกห้องประชุม</h2>
-            <div class="room-list">
-                <div class="room-card">
-                    <div class="room-container">
-                        <img src="https://d2e5ushqwiltxm.cloudfront.net/wp-content/uploads/sites/107/2020/08/11025130/imagination.png">
-                    </div>
-                    <h3>ห้องขนาดเล็ก</h3>
-                    <p>จำนวนผู้เข้าใช้: 5-20 คน</p>
-                    <p>สิ่งอำนวยความสะดวก: โปรเจคเตอร์, ไวท์บอร์ด</p>
-                    <p><strong>จุดเด่น:</strong> เหมาะสำหรับกลุ่มเล็ก, บรรยากาศเงียบ</p>
+            <!-- การ์ดแสดงข้อมูลห้องขนาดกลาง -->
+            <div class="room-card">
+                <div class="room-container">
+                    <img src="https://image.makewebcdn.com/makeweb/m_1920x0/bXtUs9mSz/LRoom/Room_E_15.jpg?v=202405291424">
                 </div>
-                
-                <div class="room-card">
-                    <div class="room-container">
-                        <img src="https://image.makewebcdn.com/makeweb/m_1920x0/bXtUs9mSz/LRoom/Room_E_15.jpg?v=202405291424">
-                    </div>
-                    <h3>ห้องขนาดกลาง</h3>
-                    <p>จำนวนผู้เข้าใช้: 20-30 คน</p>
-                    <p>สิ่งอำนวยความสะดวก: โปรเจคเตอร์, ระบบเสียง</p>
-                    <p><strong>จุดเด่น:</strong> รองรับการประชุมขนาดกลาง, ระบบเสียงคมชัด</p>
-                </div>
-                
-                <div class="room-card">
-                    <div class="room-container">
-                        <img src="https://d2e5ushqwiltxm.cloudfront.net/wp-content/uploads/sites/107/2020/09/08045237/2-10.png">
-                    </div>
-                    <h3>ห้องขนาดใหญ่</h3>
-                    <p>จำนวนผู้เข้าใช้: 30-40 คน</p>
-                    <p>สิ่งอำนวยความสะดวก: ไวท์บอร์ด, โปรเจคเตอร์</p>
-                    <p><strong>จุดเด่น:</strong> เหมาะสำหรับสัมมนาหรืออบรมพนักงาน</p>
-                </div>
-                
-                <div class="room-card">
-                    <div class="room-container">
-                        <img src="https://eventbanana.blob.core.windows.net/venueimagecontainer/ilceftzgfbncz6nmiqxm_hNonew1000_limit">
-                    </div>
-                    <h3>ห้องขนาดใหญ่พิเศษ</h3>
-                    <p>จำนวนผู้เข้าใช้: 40-50 คน</p>
-                    <p>สิ่งอำนวยความสะดวก: โปรเจคเตอร์, ระบบเสียง, ไวท์บอร์ด</p>
-                    <p><strong>จุดเด่น:</strong> รองรับงานใหญ่, ระบบอำนวยความสะดวกครบครัน</p>
-                </div>
-                
-                <div class="room-card">
-                    <div class="room-container">
-                        <img src="https://d2e5ushqwiltxm.cloudfront.net/wp-content/uploads/sites/107/2020/09/08050408/55-1.png">
-                    </div>
-                    <h3>ห้อง VIP</h3>
-                    <p>จำนวนผู้เข้าใช้: 5-20 คน</p>
-                    <p>สิ่งอำนวยความสะดวก: โปรเจคเตอร์, ระบบเสียง, ไวท์บอร์ด, โซฟาสบาย</p>
-                    <p><strong>จุดเด่น:</strong> บรรยากาศหรูหรา, บริการพิเศษ</p>
-                </div>
+                <h3>ห้องขนาดกลาง</h3>
+                <p>จำนวนผู้เข้าใช้: 20-30 คน</p>
+                <p>สิ่งอำนวยความสะดวก: โปรเจคเตอร์, ระบบเสียง</p>
+                <p><strong>จุดเด่น:</strong> รองรับการประชุมขนาดกลาง, ระบบเสียงคมชัด</p>
             </div>
             
-            <button class="book-button" onclick="window.location.href='user_bk.html';">จองห้อง</button>
+            <!-- การ์ดแสดงข้อมูลห้องขนาดใหญ่ -->
+            <div class="room-card">
+                <div class="room-container">
+                    <img src="https://d2e5ushqwiltxm.cloudfront.net/wp-content/uploads/sites/107/2020/09/08045237/2-10.png">
+                </div>
+                <h3>ห้องขนาดใหญ่</h3>
+                <p>จำนวนผู้เข้าใช้: 30-40 คน</p>
+                <p>สิ่งอำนวยความสะดวก: ไวท์บอร์ด, โปรเจคเตอร์</p>
+                <p><strong>จุดเด่น:</strong> เหมาะสำหรับสัมมนาหรืออบรมพนักงาน</p>
+            </div>
+            
+            <!-- การ์ดแสดงข้อมูลห้องขนาดใหญ่พิเศษ -->
+            <div class="room-card">
+                <div class="room-container">
+                    <img src="https://eventbanana.blob.core.windows.net/venueimagecontainer/ilceftzgfbncz6nmiqxm_hNonew1000_limit">
+                </div>
+                <h3>ห้องขนาดใหญ่พิเศษ</h3>
+                <p>จำนวนผู้เข้าใช้: 40-50 คน</p>
+                <p>สิ่งอำนวยความสะดวก: โปรเจคเตอร์, ระบบเสียง, ไวท์บอร์ด</p>
+                <p><strong>จุดเด่น:</strong> รองรับงานใหญ่, ระบบอำนวยความสะดวกครบครัน</p>
+            </div>
+            
+            <!-- การ์ดแสดงข้อมูลห้อง VIP -->
+            <div class="room-card">
+                <div class="room-container">
+                    <img src="https://d2e5ushqwiltxm.cloudfront.net/wp-content/uploads/sites/107/2020/09/08050408/55-1.png">
+                </div>
+                <h3>ห้อง VIP</h3>
+                <p>จำนวนผู้เข้าใช้: 5-20 คน</p>
+                <p>สิ่งอำนวยความสะดวก: โปรเจคเตอร์, ระบบเสียง, ไวท์บอร์ด, โซฟาสบาย</p>
+                <p><strong>จุดเด่น:</strong> บรรยากาศหรูหรา, บริการพิเศษ</p>
+            </div>
         </div>
-            <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
-            <script src="Home.js"></script>
+        
+        <!-- ปุ่มจองห้อง -->
+        <button class="book-button" onclick="window.location.href='user_bk.html';">จองห้อง</button>
+    </div>
+    
+    <!-- ส่วนแสดงแผนที่ -->
+    <div class="room-card2">
+        <div class="map-section">
+            <div class="map-container">
+                <h3>ที่อยู่ในการติดต่อ</h3>
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d444.7883605135521!2d99.97840435630211!3d14.024403808214986!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e2ff840365e223%3A0x186beebdd6a65428!2z4Liq4Liy4LiC4Liy4Lin4Li04LiK4Liy4LmA4LiX4LiE4LmC4LiZ4LmC4Lil4Lii4Li14Liq4Liy4Lij4Liq4LiZ4LmA4LiX4LioIOC4hOC4k-C4sOC4qOC4tOC4peC4m-C4qOC4suC4quC4leC4o-C5jOC5geC4peC4sOC4p-C4tOC4l-C4ouC4suC4qOC4suC4quC4leC4o-C5jA!5e0!3m2!1sth!2sth!4v1743650487429!5m2!1sth!2sth"
+                    width="500" height="300" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ลิงก์ไปยังไฟล์ JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+    <script src="Home.js"></script>
 </body>
 </html>

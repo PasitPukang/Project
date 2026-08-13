@@ -5,18 +5,46 @@ document.addEventListener('DOMContentLoaded', function() {
 // ดึงข้อมูลห้องจาก Backend
 async function loadRooms() {
     try {
-        const response = await axios.get('http://localhost:9999/tb_room');
-        const rooms = response.data;
-
-        const select = document.getElementById('room_id');
+        // ดึงข้อมูลการจองทั้งหมด
+        const bookingResponse = await axios.get('http://localhost:9999/tb_booking');
+        const bookings = bookingResponse.data;
+        console.log('Bookings:', bookings);
+        document.getElementById('Name').value = bookings.Name;
+        document.getElementById('room_id').value = bookings.room_id;
+        document.getElementById('booking_date').value = bookings.booking_date? bookings.booking_date : new Date().toISOString().split('T')[0]; // ใช้วันที่ปัจจุบันถ้าไม่มีการจอง
+        document.getElementById('start_time').value = bookings.start_time;
+        
+        // ดึงข้อมูลห้องทั้งหมด
+        const roomResponse = await axios.get('http://localhost:9999/tb_room');
+        const rooms = roomResponse.data;
+        
+        // เลือก dropdown สำหรับห้องประชุม
+        const roomSelect = document.getElementById('room_id');
+        
+        // เคลียร์ตัวเลือกที่มีอยู่เดิม
+        roomSelect.innerHTML = '';
+        
+        // เพิ่มตัวเลือกเริ่มต้น
+        const defaultOption = new Option('เลือกห้องประชุม', '');
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        roomSelect.add(defaultOption);
+        
+        // เพิ่มตัวเลือกห้องแต่ละห้อง
         rooms.forEach(room => {
-            const option = new Option(`${room.name} (${room.capacity})`, room.id);
+            const option = new Option(`${room.name} (${room.capacity} คนต่อห้อง)`, room.id);
             option.dataset.rate = getRoomRate(room.name); // กำหนดราคาตามขนาดห้อง
-            select.add(option);
+            roomSelect.add(option);
         });
+        
+        // บันทึกข้อมูลการจองไว้ใช้งานต่อ
+        window.bookingsData = bookings;
+        
+        console.log('โหลดข้อมูลห้องประชุมสำเร็จ', rooms);
+        console.log('โหลดข้อมูลการจองสำเร็จ', bookings);
     } catch (error) {
-        console.error('Error loading rooms:', error);
-        alert('Failed to load rooms.');
+        console.error('เกิดข้อผิดพลาดในการโหลดข้อมูลห้อง:', error);
+        alert('ไม่สามารถโหลดข้อมูลห้องประชุมได้');
     }
 }
 

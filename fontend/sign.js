@@ -3,6 +3,9 @@ const BASE_URL = 'http://localhost:9999';
 document.getElementById("loginForm").addEventListener("submit", async (event) => {
     event.preventDefault(); // ป้องกันการ reload หน้า
     
+    
+
+
     let username = document.querySelector("input[name=username]").value;
     let password = document.querySelector("input[name=password]").value;
     let role = document.querySelector("input[name=role]:checked")?.value; // ใช้ optional chaining เพื่อป้องกัน error หากไม่มี radio button ถูกเลือก
@@ -34,6 +37,7 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
         // ส่งข้อมูลไปยัง API เพื่อเพิ่มผู้ใช้ใหม่
         const response = await axios.post(`${BASE_URL}/tb_user`, userData);
         
+     
         // แสดงข้อความสำเร็จ
         messageDOM.innerText = "ลงทะเบียนสำเร็จ";
         messageDOM.className = "message success";

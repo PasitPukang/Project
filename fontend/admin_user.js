@@ -20,9 +20,6 @@ const loadData = async () => {
                         <td>${user.Tel}</td>
                         <td>${user.created_at}</td>
                     <td>
-                        <a href="user_bk.html?id=${user.id}">
-                            <button>Edit</button>
-                        </a>
                         <button class="delete-user" data-id="${user.id}">Delete</button>
                     </td>
                 </tr>
@@ -47,82 +44,6 @@ const loadData = async () => {
                 }
             });
         }
-        const submitData = async () => {
-            let NameDOM = document.querySelector('input[name=Name]');
-            let room_idDOM = document.querySelector('input[name=room_id]');
-            let booking_dateDOM = document.querySelector('input[name=booking_date]');
-            let start_timeDOM = document.querySelector('input[name=start_time]');
-            let end_timeDOM = document.querySelector('input[name=end_time]');
-            let titleDOM = document.querySelector('input[name=title]');
-            
-            let messageDOM = document.getElementById('message');
-        
-            try {
-                let bookingData = {
-                    Name: NameDOM.value,
-                    room_id: room_idDOM.value,
-                    booking_date: booking_dateDOM.value,
-                    start_time: start_timeDOM.value,
-                    end_time: end_timeDOM.value,
-                    title: titleDOM.value
-                };
-        
-                // Validate data before submitting
-        const errors = validateuserData(userData);
-        if (errors.length > 0) {
-            let errorHtml = '<div>กรุณาตรวจสอบข้อมูล</div><ul>';
-            errors.forEach(err => {
-                errorHtml += `<li>${err}</li>`;
-            });
-            errorHtml += '</ul>';
-            
-            messageDOM.innerHTML = errorHtml;
-            messageDOM.className = 'message danger';
-            return;
-        }
-        
-        let message = 'บันทึกข้อมูลสำเร็จ';
-        if (mode === 'CREATE') {
-            await axios.post(`${BASE_URL}/tb_user`, userData); // ส่งข้อมูล POST
-        } else {
-            await axios.put(`${BASE_URL}/tb_user/${selectedID}`, userData); // ส่งข้อมูล PUT
-            message = 'แก้ไขข้อมูลสำเร็จ';
-        }
-        
-        messageDOM.innerText = message;
-        messageDOM.className = "message success";
-        
-        loadData();
-        
-        } catch (error) {
-        console.log('Error message:', error.message);
-        
-        let errorMessage = error.message;
-        let errorList = [];
-        
-        if (error.response) {
-            errorMessage = error.response.data.message || errorMessage;
-            errorList = error.response.data.errors || [];
-        }
-        
-        let htmlData = `<div>${errorMessage}</div><ul>`;
-        errorList.forEach(err => {
-            htmlData += `<li>${err}</li>`;
-        });
-        htmlData += '</ul>';
-        
-        messageDOM.innerHTML = htmlData;
-        messageDOM.className = 'message danger'; 
-        }
-        };
-        
-        // Add event listener to submit button if it exists
-        document.addEventListener('DOMContentLoaded', function() {
-        const submitButton = document.getElementById('submit-booking');
-        if (submitButton) {
-        submitButton.addEventListener('click', submitData);
-        }
-        }); 
     } catch (error) {
         console.error('Error loading user:', error);
         showMessage('เกิดข้อผิดพลาดในการโหลดข้อมูล', 'error');
@@ -131,10 +52,4 @@ const loadData = async () => {
 function showMessage(message, type) {
     alert(message); 
 }
-document.addEventListener('DOMContentLoaded', function() {
-    const submitButton = document.getElementById('submit-booking');
-    if (submitButton) {
-        submitButton.addEventListener('click', submitData);
-    }
-});
 };

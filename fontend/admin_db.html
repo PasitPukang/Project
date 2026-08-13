@@ -9,19 +9,42 @@
     <link rel="stylesheet" href="admin_st.css">
 </head>
 <body>
-    <div class="navbar" id="adminDashboard">
-        <h2>Admin Dashboard</h2>
-        <div class="section">
-            <a href="admin_booking.html" class="button">จัดการในการจอง</a>
+    <header class="dashboard-header">
+        <div class="container">
+            <h1 class="dashboard-title">แดชบอร์ดผู้ดูแลระบบ</h1>
+            <p class="dashboard-subtitle">ยินดีต้อนรับเข้าสู่ระบบจัดการการจองห้องประชุม</p>
         </div>
-        <div class="section">
-            <a href="admin_user.html" class="button">จัดการผู้ใช้งาน</a>
+    </header>
+        <div class="menu-cards">
+            <div class="menu-card">
+                <div class="menu-icon">
+                    <i class="lni lni-calendar"></i>
+                </div>
+                <h3 class="menu-title">จัดการการจอง</h3>
+                <p class="menu-description">ดูข้อมูล อนุมัติ หรือยกเลิกการจองห้องประชุมทั้งหมด</p>
+                <a href="admin_booking.html" class="menu-link">เข้าสู่เมนู</a>
+            </div>
+            
+            <div class="menu-card">
+                <div class="menu-icon">
+                    <i class="lni lni-users"></i>
+                </div>
+                <h3 class="menu-title">จัดการผู้ใช้งาน</h3>
+                <p class="menu-description">เพิ่ม แก้ไข หรือลบข้อมูลผู้ใช้งานในระบบ</p>
+                <a href="admin_user.html" class="menu-link">เข้าสู่เมนู</a>
+            </div>
+            
+            <div class="menu-card">
+                <div class="menu-icon">
+                    <i class="lni lni-library"></i>
+                </div>
+                <h3 class="menu-title">จัดการห้องประชุม</h3>
+                <p class="menu-description">เพิ่ม แก้ไข หรือลบข้อมูลห้องประชุมทั้งหมด</p>
+                <a href="errorpage.html" class="menu-link">เข้าสู่เมนู</a>
+            </div>
         </div>
-    <div class="position_center">
-        <div class="button-back2register">
-            <button type="button"  onclick="window.location.href='Home_p.html';">Back to Home</button>
-        </div>
-    </div>
+        <button type="button" class="menu-link" onclick="window.location.href='Home_p.html';"></i>back to home</button>
+
 
     <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
     <script src="admin.js"></script>
