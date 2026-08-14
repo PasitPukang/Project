@@ -1,10 +1,10 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useBooking } from '../context/BookingContext';
-import { ShieldCheck, User, LogOut, LogIn, CalendarDays, BookmarkCheck, Lock } from 'lucide-react';
+import { ShieldCheck, LogOut, LogIn, CalendarDays, Lock } from 'lucide-react';
 
 export default function Navbar() {
-  const { user, logout, setIsAuthModalOpen, setIsAdminPinModalOpen, isAdmin } = useAuth();
+  const { user, logout, setIsAuthModalOpen, isAdmin } = useAuth();
   const { activeTab, setActiveTab, bookings } = useBooking();
 
   const myBookingsCount = bookings.filter(b => b.status !== 'cancelled').length;
@@ -12,7 +12,7 @@ export default function Navbar() {
 
   const handleAdminTabClick = () => {
     if (!isAdmin) {
-      setIsAdminPinModalOpen(true);
+      setIsAuthModalOpen(true);
       return;
     }
     setActiveTab('admin');
