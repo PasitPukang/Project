@@ -1,50 +1,101 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from '../supabaseClient';
 import { INITIAL_ROOMS, INITIAL_BOOKINGS } from '../mockData';
 
 const BookingContext = createContext();
 
 export function BookingProvider({ children }) {
   const [rooms, setRooms] = useState(() => {
-    const saved = localStorage.getItem('mr_rooms_v2');
+    const saved = localStorage.getItem('mr_rooms_v3');
     return saved ? JSON.parse(saved) : INITIAL_ROOMS;
   });
 
   const [bookings, setBookings] = useState(() => {
-    const saved = localStorage.getItem('mr_bookings_v2');
+    const saved = localStorage.getItem('mr_bookings_v3');
     return saved ? JSON.parse(saved) : INITIAL_BOOKINGS;
   });
 
   const [selectedRoomForBooking, setSelectedRoomForBooking] = useState(null);
-  const [activeTab, setActiveTab] = useState('catalog'); // catalog, my_bookings, admin
+  const [activeTab, setActiveTab] = useState('catalog');
 
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
   const [capacityFilter, setCapacityFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
 
+  // Fetch Rooms & Bookings from Supabase Cloud Database if URL configured
   useEffect(() => {
-    localStorage.setItem('mr_rooms_v2', JSON.stringify(rooms));
+    const isSupabaseConfigured = Boolean(import.meta.env.VITE_SUPABASE_URL);
+
+    if (isSupabaseConfigured) {
+      // 1. Fetch Rooms from Supabase Cloud DB
+      supabase
+        .from('rooms')
+        .select('*')
+        .then(({ data, error }) => {
+          if (!error && data && data.length > 0) {
+            setRooms(data);
+          }
+        });
+
+      // 2. Fetch Bookings from Supabase Cloud DB
+      supabase
+        .from('bookings')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .then(({ data, error }) => {
+          if (!error && data && data.length > 0) {
+            setBookings(data);
+          }
+        });
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('mr_rooms_v3', JSON.stringify(rooms));
   }, [rooms]);
 
   useEffect(() => {
-    localStorage.setItem('mr_bookings_v2', JSON.stringify(bookings));
+    localStorage.setItem('mr_bookings_v3', JSON.stringify(bookings));
   }, [bookings]);
 
   // Booking Actions
-  const createBooking = (bookingData) => {
+  const createBooking = async (bookingData) => {
     const newBooking = {
       id: Date.now(),
       status: 'pending',
       created_at: new Date().toISOString().replace('T', ' ').substring(0, 16),
       ...bookingData
     };
+
     setBookings(prev => [newBooking, ...prev]);
     setSelectedRoomForBooking(null);
+
+    // Sync with Supabase Cloud DB if available
+    if (import.meta.env.VITE_SUPABASE_URL) {
+      await supabase.from('bookings').insert([{
+        room_id: bookingData.room_id,
+        room_name: bookingData.room_name,
+        user_name: bookingData.user_name,
+        user_tel: bookingData.user_tel,
+        booking_date: bookingData.booking_date,
+        start_time: bookingData.start_time,
+        end_time: bookingData.end_time,
+        title: bookingData.title,
+        headcount: bookingData.headcount,
+        status: 'pending'
+      }]);
+    }
+
     return newBooking;
   };
 
-  const updateBookingStatus = (id, newStatus) => {
+  const updateBookingStatus = async (id, newStatus) => {
     setBookings(prev => prev.map(b => b.id === id ? { ...b, status: newStatus } : b));
+
+    if (import.meta.env.VITE_SUPABASE_URL) {
+      await supabase.from('bookings').update({ status: newStatus }).eq('id', id);
+    }
   };
 
   const cancelBooking = (id) => {
@@ -52,7 +103,7 @@ export function BookingProvider({ children }) {
   };
 
   // Room Actions (Admin)
-  const addRoom = (roomData) => {
+  const addRoom = async (roomData) => {
     const newRoom = {
       id: Date.now(),
       status: 'available',
@@ -61,16 +112,22 @@ export function BookingProvider({ children }) {
       ...roomData
     };
     setRooms(prev => [...prev, newRoom]);
+
+    if (import.meta.env.VITE_SUPABASE_URL) {
+      await supabase.from('rooms').insert([newRoom]);
+    }
   };
 
-  const toggleRoomStatus = (id) => {
-    setRooms(prev => prev.map(r => {
-      if (r.id === id) {
-        const nextStatus = r.status === 'available' ? 'occupied' : 'available';
-        return { ...r, status: nextStatus };
-      }
-      return r;
-    }));
+  const toggleRoomStatus = async (id) => {
+    const target = rooms.find(r => r.id === id);
+    if (!target) return;
+    const nextStatus = target.status === 'available' ? 'occupied' : 'available';
+
+    setRooms(prev => prev.map(r => r.id === id ? { ...r, status: nextStatus } : r));
+
+    if (import.meta.env.VITE_SUPABASE_URL) {
+      await supabase.from('rooms').update({ status: nextStatus }).eq('id', id);
+    }
   };
 
   // Filtered Rooms
