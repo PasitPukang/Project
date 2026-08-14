@@ -1,31 +1,80 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { X, LogIn, KeyRound, User, AlertCircle } from 'lucide-react';
+import { X, LogIn, UserPlus, KeyRound, User, Mail, Phone, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export default function AuthModal() {
-  const { isAuthModalOpen, setIsAuthModalOpen, login, authError, setAuthError } = useAuth();
+  const {
+    isAuthModalOpen,
+    setIsAuthModalOpen,
+    login,
+    register,
+    authError,
+    setAuthError,
+    authSuccessMsg,
+    setAuthSuccessMsg,
+    loading
+  } = useAuth();
+
+  const [tab, setTab] = useState('login'); // 'login' or 'register'
+
+  // Login Form State
   const [username, setUsername] = useState('pasit');
   const [password, setPassword] = useState('123456');
 
+  // Register Form State
+  const [regData, setRegData] = useState({
+    fullName: '',
+    email: '',
+    username: '',
+    password: '',
+    confirmPassword: '',
+    tel: ''
+  });
+
   if (!isAuthModalOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     if (!username.trim()) return;
 
-    const result = login(username, password);
-    if (result.success) {
+    const res = await login(username, password);
+    if (res.success) {
       setIsAuthModalOpen(false);
     }
   };
 
+  const handleRegisterSubmit = async (e) => {
+    e.preventDefault();
+    setAuthError('');
+    setAuthSuccessMsg('');
+
+    if (regData.password !== regData.confirmPassword) {
+      setAuthError('รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน');
+      return;
+    }
+
+    if (regData.password.length < 6) {
+      setAuthError('รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร');
+      return;
+    }
+
+    const res = await register(regData);
+    if (res.success) {
+      setTimeout(() => {
+        setIsAuthModalOpen(false);
+      }, 1500);
+    }
+  };
+
   const handleAdminPreset = () => {
+    setTab('login');
     setUsername('admin');
     setPassword('admin1234');
     setAuthError('');
   };
 
   const handleUserPreset = () => {
+    setTab('login');
     setUsername('pasit');
     setPassword('123456');
     setAuthError('');
@@ -35,9 +84,37 @@ export default function AuthModal() {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
       <div className="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl overflow-hidden shadow-xl">
         
-        {/* Header */}
-        <div className="px-5 py-4 border-b border-slate-800 flex items-center justify-between">
-          <h3 className="font-semibold text-base text-slate-100">เข้าสู่ระบบ</h3>
+        {/* Header Tabs */}
+        <div className="px-5 py-3 border-b border-slate-800 flex items-center justify-between">
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                setTab('login');
+                setAuthError('');
+                setAuthSuccessMsg('');
+              }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors ${
+                tab === 'login' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              <span>เข้าสู่ระบบ</span>
+            </button>
+            <button
+              onClick={() => {
+                setTab('register');
+                setAuthError('');
+                setAuthSuccessMsg('');
+              }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors ${
+                tab === 'register' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <UserPlus className="w-3.5 h-3.5" />
+              <span>สมัครสมาชิกใหม่</span>
+            </button>
+          </div>
+
           <button
             onClick={() => setIsAuthModalOpen(false)}
             className="p-1 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800"
@@ -47,75 +124,167 @@ export default function AuthModal() {
         </div>
 
         <div className="p-5 space-y-4 text-xs">
-          
-          {/* Presets */}
-          <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
-            <p className="text-[11px] text-slate-400 text-center">เลือกบัญชีทดสอบใช้งาน</p>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={handleUserPreset}
-                className={`py-1.5 px-2 rounded-lg font-medium border ${
-                  username === 'pasit' ? 'bg-blue-600/20 text-blue-300 border-blue-500/30' : 'bg-slate-900 text-slate-400 border-slate-800'
-                }`}
-              >
-                ผู้ใช้ (User)
-              </button>
-              <button
-                type="button"
-                onClick={handleAdminPreset}
-                className={`py-1.5 px-2 rounded-lg font-medium border ${
-                  username === 'admin' ? 'bg-purple-600/20 text-purple-300 border-purple-500/30' : 'bg-slate-900 text-slate-400 border-slate-800'
-                }`}
-              >
-                แอดมิน (Admin)
-              </button>
-            </div>
-          </div>
 
+          {/* Feedback Alerts */}
           {authError && (
-            <div className="p-2.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 font-medium">
-              {authError}
+            <div className="p-2.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 font-medium flex items-center gap-1.5">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{authError}</span>
             </div>
           )}
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <div>
-              <label className="block text-slate-400 mb-1">ชื่อผู้ใช้งาน (Username) *</label>
-              <input
-                type="text"
-                required
-                value={username}
-                onChange={(e) => {
-                  setUsername(e.target.value);
-                  setAuthError('');
-                }}
-                className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200"
-              />
+          {authSuccessMsg && (
+            <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-medium flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 shrink-0" />
+              <span>{authSuccessMsg}</span>
             </div>
+          )}
 
-            <div>
-              <label className="block text-slate-400 mb-1">รหัสผ่าน (Password) *</label>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  setAuthError('');
-                }}
-                className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200"
-              />
+          {/* TAB 1: LOGIN */}
+          {tab === 'login' && (
+            <div className="space-y-4">
+              
+              {/* Presets */}
+              <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
+                <p className="text-[11px] text-slate-400 text-center">เลือกบัญชีทดสอบใช้งาน</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={handleUserPreset}
+                    className={`py-1.5 px-2 rounded-lg font-medium border ${
+                      username === 'pasit' ? 'bg-blue-600/20 text-blue-300 border-blue-500/30' : 'bg-slate-900 text-slate-400 border-slate-800'
+                    }`}
+                  >
+                    ผู้ใช้ (User)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleAdminPreset}
+                    className={`py-1.5 px-2 rounded-lg font-medium border ${
+                      username === 'admin' ? 'bg-purple-600/20 text-purple-300 border-purple-500/30' : 'bg-slate-900 text-slate-400 border-slate-800'
+                    }`}
+                  >
+                    แอดมิน (Admin)
+                  </button>
+                </div>
+              </div>
+
+              <form onSubmit={handleLoginSubmit} className="space-y-3">
+                <div>
+                  <label className="block text-slate-400 mb-1">อีเมล หรือ Username *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="เช่น pasit@example.com หรือ pasit"
+                    value={username}
+                    onChange={(e) => {
+                      setUsername(e.target.value);
+                      setAuthError('');
+                    }}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 mb-1">รหัสผ่าน *</label>
+                  <input
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setAuthError('');
+                    }}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs mt-2 disabled:opacity-50"
+                >
+                  {loading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ'}
+                </button>
+              </form>
+
             </div>
+          )}
 
-            <button
-              type="submit"
-              className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs mt-2"
-            >
-              เข้าสู่ระบบ
-            </button>
-          </form>
+          {/* TAB 2: REGISTER (สมัครสมาชิกใหม่) */}
+          {tab === 'register' && (
+            <form onSubmit={handleRegisterSubmit} className="space-y-3">
+              
+              <div>
+                <label className="block text-slate-400 mb-1">ชื่อ-นามสกุล *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="เช่น สมชาย ใจดี"
+                  value={regData.fullName}
+                  onChange={(e) => setRegData({ ...regData, fullName: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-400 mb-1">อีเมล (Email) *</label>
+                <input
+                  type="email"
+                  required
+                  placeholder="เช่น name@example.com"
+                  value={regData.email}
+                  onChange={(e) => setRegData({ ...regData, email: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-400 mb-1">เบอร์โทรศัพท์ติดต่อ *</label>
+                <input
+                  type="tel"
+                  required
+                  placeholder="เช่น 081-234-5678"
+                  value={regData.tel}
+                  onChange={(e) => setRegData({ ...regData, tel: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-400 mb-1">รหัสผ่าน (อย่างน้อย 6 ตัวอักษร) *</label>
+                <input
+                  type="password"
+                  required
+                  placeholder="••••••••"
+                  value={regData.password}
+                  onChange={(e) => setRegData({ ...regData, password: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-400 mb-1">ยืนยันรหัสผ่าน *</label>
+                <input
+                  type="password"
+                  required
+                  placeholder="••••••••"
+                  value={regData.confirmPassword}
+                  onChange={(e) => setRegData({ ...regData, confirmPassword: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs mt-2 disabled:opacity-50"
+              >
+                {loading ? 'กำลังบันทึกข้อมูล...' : 'ลงทะเบียนสมัครสมาชิก'}
+              </button>
+
+            </form>
+          )}
 
         </div>
 
