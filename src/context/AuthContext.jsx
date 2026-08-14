@@ -6,9 +6,10 @@ const AuthContext = createContext();
 const ADMIN_MASTER_PASSCODE = 'ADMIN1234';
 
 export function AuthProvider({ children }) {
+  // Clean Initial State: Default to null (Guest / Not logged in)
   const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('mr_auth_user_v4');
-    return saved ? JSON.parse(saved) : INITIAL_USERS[1];
+    const saved = localStorage.getItem('mr_auth_user_v5');
+    return saved ? JSON.parse(saved) : null;
   });
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -19,9 +20,9 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     if (user) {
-      localStorage.setItem('mr_auth_user_v4', JSON.stringify(user));
+      localStorage.setItem('mr_auth_user_v5', JSON.stringify(user));
     } else {
-      localStorage.removeItem('mr_auth_user_v4');
+      localStorage.removeItem('mr_auth_user_v5');
     }
   }, [user]);
 
@@ -65,7 +66,6 @@ export function AuthProvider({ children }) {
 
     try {
       if (import.meta.env.VITE_SUPABASE_URL) {
-        // Attempt Supabase Cloud SignUp
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -86,14 +86,12 @@ export function AuthProvider({ children }) {
         }
       }
 
-      // Log in user immediately on frontend
       setUser(newUser);
       setLoading(false);
       setAuthSuccessMsg('สมัครสมาชิกและเข้าสู่ระบบสำเร็จ!');
       return { success: true };
 
     } catch (err) {
-      // Fallback log in user on frontend so user is never blocked
       setUser(newUser);
       setLoading(false);
       setAuthSuccessMsg('สมัครสมาชิกและเข้าสู่ระบบสำเร็จ!');
@@ -168,7 +166,7 @@ export function AuthProvider({ children }) {
   const elevateToAdminWithPin = (passcode) => {
     if (passcode === ADMIN_MASTER_PASSCODE) {
       const adminUser = {
-        ...user,
+        ...(user || {}),
         role: 'admin',
         name: user?.name ? `${user.name} (Admin)` : 'ผู้ดูแลระบบ'
       };
