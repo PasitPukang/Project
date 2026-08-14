@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useBooking } from '../context/BookingContext';
-import { ShieldCheck, LogOut, LogIn, CalendarDays, Lock } from 'lucide-react';
+import { ShieldCheck, LogOut, LogIn, CalendarDays } from 'lucide-react';
 
 export default function Navbar() {
   const { user, logout, setIsAuthModalOpen, isAdmin } = useAuth();
@@ -9,14 +9,6 @@ export default function Navbar() {
 
   const myBookingsCount = bookings.filter(b => b.status !== 'cancelled').length;
   const pendingCount = bookings.filter(b => b.status === 'pending').length;
-
-  const handleAdminTabClick = () => {
-    if (!isAdmin) {
-      setIsAuthModalOpen(true);
-      return;
-    }
-    setActiveTab('admin');
-  };
 
   return (
     <header className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-slate-800">
@@ -67,22 +59,25 @@ export default function Navbar() {
               )}
             </button>
 
-            <button
-              onClick={handleAdminTabClick}
-              className={`px-3.5 py-1.5 rounded-lg font-medium transition-colors flex items-center gap-1.5 ${
-                activeTab === 'admin' && isAdmin
-                  ? 'bg-purple-950/60 text-purple-300 border border-purple-800/50'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              {isAdmin ? <ShieldCheck className="w-4 h-4 text-purple-400" /> : <Lock className="w-3.5 h-3.5 text-slate-500" />}
-              <span>จัดการระบบ</span>
-              {isAdmin && pendingCount > 0 && (
-                <span className="px-1.5 py-0.2 text-xs rounded-md bg-amber-500/20 text-amber-300 font-semibold">
-                  {pendingCount}
-                </span>
-              )}
-            </button>
+            {/* Admin Tab - ONLY Visible to Admins */}
+            {isAdmin && (
+              <button
+                onClick={() => setActiveTab('admin')}
+                className={`px-3.5 py-1.5 rounded-lg font-medium transition-colors flex items-center gap-1.5 ${
+                  activeTab === 'admin'
+                    ? 'bg-purple-950/60 text-purple-300 border border-purple-800/50'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <ShieldCheck className="w-4 h-4 text-purple-400" />
+                <span>จัดการระบบ</span>
+                {pendingCount > 0 && (
+                  <span className="px-1.5 py-0.2 text-xs rounded-md bg-amber-500/20 text-amber-300 font-semibold">
+                    {pendingCount}
+                  </span>
+                )}
+              </button>
+            )}
           </nav>
 
           {/* User Auth */}
@@ -127,12 +122,16 @@ export default function Navbar() {
           >
             การจองของฉัน ({myBookingsCount})
           </button>
-          <button
-            onClick={handleAdminTabClick}
-            className={activeTab === 'admin' && isAdmin ? 'text-purple-400 font-semibold' : ''}
-          >
-            จัดการระบบ {pendingCount > 0 && `(${pendingCount})`}
-          </button>
+
+          {/* Mobile Admin Tab - ONLY Visible to Admins */}
+          {isAdmin && (
+            <button
+              onClick={() => setActiveTab('admin')}
+              className={activeTab === 'admin' ? 'text-purple-400 font-semibold' : ''}
+            >
+              จัดการระบบ {pendingCount > 0 && `(${pendingCount})`}
+            </button>
+          )}
         </div>
 
       </div>
