@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useBooking } from '../context/BookingContext';
-import { X, Lock, KeyRound } from 'lucide-react';
+import { X, Lock } from 'lucide-react';
 
 export default function AdminPinModal() {
   const { isAdminPinModalOpen, setIsAdminPinModalOpen, elevateToAdminWithPin } = useAuth();
@@ -33,7 +33,7 @@ export default function AdminPinModal() {
         <div className="px-5 py-4 border-b border-slate-800 flex items-center justify-between">
           <h3 className="font-semibold text-base text-slate-100 flex items-center gap-2">
             <Lock className="w-4 h-4 text-purple-400" />
-            <span>ยืนยันรหัสแอดมิน</span>
+            <span>ยืนยันรหัสผู้ดูแลระบบ</span>
           </h3>
           <button
             onClick={() => setIsAdminPinModalOpen(false)}
@@ -61,7 +61,7 @@ export default function AdminPinModal() {
               type="password"
               required
               autoFocus
-              placeholder="ป้อนรหัสแอดมิน..."
+              placeholder="ป้อนรหัสผ่านแอดมิน..."
               value={passcode}
               onChange={(e) => {
                 setPasscode(e.target.value);
@@ -69,9 +69,6 @@ export default function AdminPinModal() {
               }}
               className="w-full px-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 font-mono tracking-widest text-center"
             />
-            <p className="text-[11px] text-slate-500 text-center mt-1">
-              รหัสทดสอบ: <code className="bg-slate-950 px-1 py-0.5 rounded text-purple-300">ADMIN1234</code>
-            </p>
           </div>
 
           <div className="flex gap-2 pt-1">

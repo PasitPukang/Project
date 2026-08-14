@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { X, LogIn, UserPlus, KeyRound, User, Mail, Phone, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { X, LogIn, UserPlus, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export default function AuthModal() {
   const {
@@ -17,9 +17,9 @@ export default function AuthModal() {
 
   const [tab, setTab] = useState('login'); // 'login' or 'register'
 
-  // Login Form State
-  const [username, setUsername] = useState('pasit');
-  const [password, setPassword] = useState('123456');
+  // Clean login state - no prefilled passwords
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   // Register Form State
   const [regData, setRegData] = useState({
@@ -35,11 +35,13 @@ export default function AuthModal() {
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    if (!username.trim()) return;
+    if (!username.trim() || !password.trim()) return;
 
     const res = await login(username, password);
     if (res.success) {
       setIsAuthModalOpen(false);
+      setUsername('');
+      setPassword('');
     }
   };
 
@@ -62,22 +64,16 @@ export default function AuthModal() {
     if (res.success) {
       setTimeout(() => {
         setIsAuthModalOpen(false);
+        setRegData({
+          fullName: '',
+          email: '',
+          username: '',
+          password: '',
+          confirmPassword: '',
+          tel: ''
+        });
       }, 1500);
     }
-  };
-
-  const handleAdminPreset = () => {
-    setTab('login');
-    setUsername('admin');
-    setPassword('admin1234');
-    setAuthError('');
-  };
-
-  const handleUserPreset = () => {
-    setTab('login');
-    setUsername('pasit');
-    setPassword('123456');
-    setAuthError('');
   };
 
   return (
@@ -142,79 +138,51 @@ export default function AuthModal() {
 
           {/* TAB 1: LOGIN */}
           {tab === 'login' && (
-            <div className="space-y-4">
-              
-              {/* Presets */}
-              <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
-                <p className="text-[11px] text-slate-400 text-center">เลือกบัญชีทดสอบใช้งาน</p>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={handleUserPreset}
-                    className={`py-1.5 px-2 rounded-lg font-medium border ${
-                      username === 'pasit' ? 'bg-blue-600/20 text-blue-300 border-blue-500/30' : 'bg-slate-900 text-slate-400 border-slate-800'
-                    }`}
-                  >
-                    ผู้ใช้ (User)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleAdminPreset}
-                    className={`py-1.5 px-2 rounded-lg font-medium border ${
-                      username === 'admin' ? 'bg-purple-600/20 text-purple-300 border-purple-500/30' : 'bg-slate-900 text-slate-400 border-slate-800'
-                    }`}
-                  >
-                    แอดมิน (Admin)
-                  </button>
-                </div>
+            <form onSubmit={handleLoginSubmit} className="space-y-3">
+              <div>
+                <label className="block text-slate-400 mb-1">อีเมล หรือ ชื่อผู้ใช้ *</label>
+                <input
+                  type="text"
+                  required
+                  autoFocus
+                  placeholder="ป้อนอีเมล หรือ Username..."
+                  value={username}
+                  onChange={(e) => {
+                    setUsername(e.target.value);
+                    setAuthError('');
+                  }}
+                  className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200"
+                />
               </div>
 
-              <form onSubmit={handleLoginSubmit} className="space-y-3">
-                <div>
-                  <label className="block text-slate-400 mb-1">อีเมล หรือ Username *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="เช่น pasit@example.com หรือ pasit"
-                    value={username}
-                    onChange={(e) => {
-                      setUsername(e.target.value);
-                      setAuthError('');
-                    }}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200"
-                  />
-                </div>
+              <div>
+                <label className="block text-slate-400 mb-1">รหัสผ่าน *</label>
+                <input
+                  type="password"
+                  required
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setAuthError('');
+                  }}
+                  className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200"
+                />
+              </div>
 
-                <div>
-                  <label className="block text-slate-400 mb-1">รหัสผ่าน *</label>
-                  <input
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                      setAuthError('');
-                    }}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs mt-2 disabled:opacity-50"
-                >
-                  {loading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ'}
-                </button>
-              </form>
-
-            </div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs mt-2 disabled:opacity-50"
+              >
+                {loading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ'}
+              </button>
+            </form>
           )}
 
           {/* TAB 2: REGISTER (สมัครสมาชิกใหม่) */}
           {tab === 'register' && (
             <form onSubmit={handleRegisterSubmit} className="space-y-3">
-              
               <div>
                 <label className="block text-slate-400 mb-1">ชื่อ-นามสกุล *</label>
                 <input
@@ -282,7 +250,6 @@ export default function AuthModal() {
               >
                 {loading ? 'กำลังบันทึกข้อมูล...' : 'ลงทะเบียนสมัครสมาชิก'}
               </button>
-
             </form>
           )}
 
